@@ -30,8 +30,16 @@
             Introduction
         </header>
         <article>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>The content on this page is based on the <a href="https://www.kaggle.com/learn/intro-to-machine-learning">Machine
+                Learning Micro-Course</a> from <a href="https://www.kaggle.com">Kaggle</a> and will summarise the
+                content from the lessons.</p>
+            <p>Machine Learning models aim to describe data. An example of a model is a Decision Tree. This splits
+                the data into categories for example, to predict house prices the data can be split based on whether the
+                house has more or less than X bedrooms.
+            </p>
+            <quote>The step of capturing patterns from data is called <strong>fitting</strong> or <strong>training</strong>
+                the model. The data used to <strong>fit</strong> the model is called the <strong>training data.</strong></quote>
+            <p>Once the model has been fit it can be applied to new data to predict house values.</p>
         </article>
     </section>
 
@@ -40,9 +48,16 @@
             Data Exploration
         </header>
         <article>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <code>A</code>
-            <p>PLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>To get started, it is important to understand the data.
+                Pandas is the primary tool used for exploring and manipulating data.</p>
+            <p>To explore the data, Pandas DataFrames are used. The following will load and give a summary of the data.</p>
+    <code>import pandas as pd
+# save filepath to variable for easier access
+melbourne_file_path = '../input/melbourne-housing-snapshot/melb_data.csv'
+# read the data and store data in DataFrame titled melbourne_data
+melbourne_data = pd.read_csv(melbourne_file_path)
+# print a summary of the data in Melbourne data
+melbourne_data.describe()</code>
         </article>
     </section>
 
@@ -51,10 +66,37 @@
             Machine Learning Models
         </header>
         <article>
+            <p>To further explore the data it can be useful can print the list of all columns in the dataset.
+            </p>
+            <p>When setting up a model the target needs to be defined. In the house price example, the target value
+            is the price. This is commonly defined as <strong>y</strong>.</p>
+            <code>y = melbourne_data.Price</code>
+            <p>The columns used to input to the model and later to make predictions are referred to as features. In the
+            house prices example, this could be the number of bedrooms, location, size. These features can be selected
+            with the following and are conventionally referred to as <strong>X</strong>.</p>
+            <code>melbourne_features = ['Rooms', 'Bathroom', 'Landsize', 'Lattitude', 'Longtitude']</code>
+            <p>Scikit-learn, written as sklearn, is the most popular python library for modelling data from DataFrames.
+                The steps to build and use a model are:</p>
+            <ul>
+            <li>Define the model</li>
+            <li>Fit the data</li>
+            <li>Predict based on new data</li>
+            <li>Evaluate the model</li>
+        </ul>
+        <p>Using the following code a decision tree model is defined, the data are fit with the features and target
+        variable and predictions are made.</p>
+            <code>from sklearn.tree import DecisionTreeRegressor
 
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <code>B</code>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+# Define model. Specify a number for random_state to ensure same results each run
+melbourne_model = DecisionTreeRegressor(random_state=1)
+
+# Fit model
+melbourne_model.fit(X, y)
+
+print("Making predictions for the following 5 houses:")
+print(X.head())
+print("The predictions are")
+print(melbourne_model.predict(X.head()))</code>
         </article>
     </section>
 
@@ -114,9 +156,6 @@
 </main>
 
 
-
-
-<script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
 
 </body>
 </html>
