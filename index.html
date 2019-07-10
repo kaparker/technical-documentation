@@ -105,18 +105,37 @@ print(melbourne_model.predict(X.head()))</code>
             Model Validation
         </header>
         <article>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <code>C</code>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <ul>
-                <li>Lorem ipsum</li>
-                <li>Lorem ipsum</li>
-                <li>Lorem ipsum</li>
-                <li>Lorem ipsum</li>
-                <li>Lorem ipsum</li>
-            </ul>
-            <code>C</code>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>In the previous section a model was built, next it needs to be evaluated!</p>
+            <p>A useful measurement for model quality is predictive accuracy, whether the predictions were close to their true values.
+            Predictions need to be made on a different dataset to the one that the model was trained on.</p>
+            <p>To summarise model quality <strong>Mean Absolute Error (MAE)</strong> can be used. The error can be defined as:</p>
+            <code>error = actual - predicted</code>
+            <p>The MAE takes the absolute value of each error and takes the average of the absolute error and can be described as</p>
+            <quote>On average, our predictions are off by about X</quote>
+            <p>Continuing using the model from the previous section, the MAE is calculated by:</p>
+            <code>from sklearn.metrics import mean_absolute_error
+predicted_home_prices = melbourne_model.predict(X)
+mean_absolute_error(y, predicted_home_prices)</code>
+            <p>This example however uses a single sample for both building the model and evaluating which can create biases in the model,
+                and lead to inaccuracies when applying the model to new data.
+            It it preferred to split the sample into <i>training data</i> and <i>validation data</i> (or test data).
+            This can be done with sklearn:</p>
+            <code>from sklearn.model_selection import train_test_split
+
+# split data into training and validation data, for both features and target
+# The split is based on a random number generator. Supplying a numeric value to
+# the random_state argument guarantees we get the same split every time we
+# run this script.
+train_X, val_X, train_y, val_y = train_test_split(X, y, random_state = 0)
+# Define model
+melbourne_model = DecisionTreeRegressor()
+# Fit model
+melbourne_model.fit(train_X, train_y)
+
+# get predicted prices on validation data
+val_predictions = melbourne_model.predict(val_X)
+print(mean_absolute_error(val_y, val_predictions))</code>
+            <p>The value of the MAE may significantly increase when tested on validation data instead of the full sample - this is to be expected.</p>
         </article>
     </section>
 
@@ -125,9 +144,29 @@ print(melbourne_model.predict(X.head()))</code>
             Underfitting and Overfitting
         </header>
         <article>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <code>D</code>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>To find the optimal model either the parameters of a model can be changed or a different model can be tested.</p>
+            <p>If a model is <strong>overfit</strong>, it captures spurious patterns in the training data that won't reoccur in the future.
+            Alternatively a model is <strong>underfit</strong> if the model does not capture relevant patterns.
+            In both of these cases the predictions will be less accurate, another reason to train and predict on different datasets.
+            </p>
+            <p>Using the Decision Tree model, the model is trained with different values for the <i>max_leaf_nodes</i> parameter
+                to determine the MAE:</p>
+            <code>from sklearn.metrics import mean_absolute_error
+from sklearn.tree import DecisionTreeRegressor
+
+def get_mae(max_leaf_nodes, train_X, val_X, train_y, val_y):
+    model = DecisionTreeRegressor(max_leaf_nodes=max_leaf_nodes, random_state=0)
+    model.fit(train_X, train_y)
+    preds_val = model.predict(val_X)
+    mae = mean_absolute_error(val_y, preds_val)
+    return(mae)</code>
+            <p>Using the same data from the previous section, the accuracy of the models with different parameters can be compared:</p>
+            <code># compare MAE with differing values of max_leaf_nodes
+for max_leaf_nodes in [5, 50, 500, 5000]:
+    my_mae = get_mae(max_leaf_nodes, train_X, val_X, train_y, val_y)
+    print("Max leaf nodes: %d  \t\t Mean Absolute Error:  %d" %(max_leaf_nodes, my_mae))
+            </code>
+
         </article>
     </section>
 
